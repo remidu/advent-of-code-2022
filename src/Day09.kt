@@ -3,6 +3,15 @@ import kotlin.math.abs
 private var xPositions: ArrayList<Int> = ArrayList()
 private var yPositions: ArrayList<Int> = ArrayList()
 
+private fun notTail(number: Int): Boolean = number < xPositions.size-1
+
+private fun tooFarX(number: Int) = abs(xPositions[number] - xPositions[number+1]) > 1
+private fun tooFarY(number: Int) = abs(yPositions[number] - yPositions[number+1]) > 1
+private fun goingRight(number: Int) = xPositions[number] > xPositions[number+1]
+private fun goingLeft(number: Int) = xPositions[number] < xPositions[number+1]
+private fun goingUp(number: Int) = yPositions[number] > yPositions[number+1]
+private fun goingDown(number: Int) = yPositions[number] < yPositions[number+1]
+
 private fun moveUp(number: Int) = moveUp(number, left = false, right = false)
 private fun moveUpLeft(number: Int) = moveUp(number, left = true, right = false)
 private fun moveUpRight(number: Int) = moveUp(number, left = false, right = true)
@@ -10,17 +19,13 @@ private fun moveUp(number: Int, left: Boolean, right: Boolean) {
     yPositions[number]++
     if (left) moveLeft(number)
     if (right) moveRight(number)
-    if (number < xPositions.size-1) {
-        if (abs(yPositions[number] - yPositions[number+1]) > 1
-            && xPositions[number] < xPositions[number+1]) {
-            moveUpLeft(number+1)
-        } else if (abs(yPositions[number] - yPositions[number+1]) > 1
-            && xPositions[number] > xPositions[number+1]) {
-            moveUpRight(number+1)
-        } else if (abs(yPositions[number] - yPositions[number+1]) > 1) {
+    if (notTail(number)) {
+        if (tooFarY(number) && goingLeft(number)) moveUpLeft(number+1)
+        else if (tooFarY(number) && goingRight(number)) moveUpRight(number+1)
+        else if (tooFarY(number)) {
             moveUp(number+1)
-            if (xPositions[number] < xPositions[number+1]) moveLeft(number+1)
-            else if (xPositions[number] > xPositions[number+1]) moveRight(number+1)
+            if (goingLeft(number)) moveLeft(number+1)
+            else if (goingRight(number)) moveRight(number+1)
         }
     }
 }
@@ -32,17 +37,13 @@ private fun moveDown(number: Int, left: Boolean, right: Boolean) {
     yPositions[number]--
     if (left) moveLeft(number)
     if (right) moveRight(number)
-    if (number < xPositions.size-1) {
-        if (abs(yPositions[number] - yPositions[number+1]) > 1
-            && xPositions[number] < xPositions[number+1]) {
-            moveDownLeft(number+1)
-        } else if (abs(yPositions[number] - yPositions[number+1]) > 1
-            && xPositions[number] > xPositions[number+1]) {
-            moveDownRight(number+1)
-        } else if (abs(yPositions[number] - yPositions[number+1]) > 1) {
+    if (notTail(number)) {
+        if (tooFarY(number) && goingLeft(number)) moveDownLeft(number+1)
+        else if (tooFarY(number) && goingRight(number)) moveDownRight(number+1)
+        else if (tooFarY(number)) {
             moveDown(number+1)
-            if (xPositions[number] < xPositions[number+1]) moveLeft(number+1)
-            else if (xPositions[number] > xPositions[number+1]) moveRight(number+1)
+            if (goingLeft(number)) moveLeft(number+1)
+            else if (goingRight(number)) moveRight(number+1)
         }
     }
 }
@@ -54,17 +55,13 @@ private fun moveLeft(number: Int, up: Boolean, down: Boolean) {
     xPositions[number]--
     if (down) moveDown(number)
     if (up) moveUp(number)
-    if (number < xPositions.size-1) {
-        if (abs(xPositions[number] - xPositions[number+1]) > 1
-            && yPositions[number] < yPositions[number+1]) {
-            moveLeftDown(number+1)
-        } else if (abs(xPositions[number] - xPositions[number+1]) > 1
-            && yPositions[number] > yPositions[number+1]) {
-            moveLeftUp(number+1)
-        } else if (abs(xPositions[number] - xPositions[number+1]) > 1) {
+    if (notTail(number)) {
+        if (tooFarX(number) && goingDown(number)) moveLeftDown(number+1)
+        else if (tooFarX(number) && goingUp(number)) moveLeftUp(number+1)
+        else if (tooFarX(number)) {
             moveLeft(number+1)
-            if (yPositions[number] < yPositions[number+1]) moveDown(number+1)
-            else if (yPositions[number] > yPositions[number+1]) moveUp(number+1)
+            if (goingDown(number)) moveDown(number+1)
+            else if (goingUp(number)) moveUp(number+1)
         }
     }
 }
@@ -76,17 +73,13 @@ private fun moveRight(number: Int, up: Boolean, down: Boolean) {
     xPositions[number]++
     if (down) moveDown(number)
     if (up) moveUp(number)
-    if (number < xPositions.size-1) {
-        if (abs(xPositions[number] - xPositions[number+1]) > 1
-            && yPositions[number] < yPositions[number+1]) {
-            moveRightDown(number+1)
-        } else if (abs(xPositions[number] - xPositions[number+1]) > 1
-            && yPositions[number] > yPositions[number+1]) {
-            moveRightUp(number+1)
-        } else if (abs(xPositions[number] - xPositions[number+1]) > 1) {
+    if (notTail(number)) {
+        if (tooFarX(number) && goingDown(number)) moveRightDown(number+1)
+        else if (tooFarX(number) && goingUp(number)) moveRightUp(number+1)
+        else if (tooFarX(number)) {
             moveRight(number+1)
-            if (yPositions[number] < yPositions[number+1]) moveDown(number+1)
-            else if (yPositions[number] > yPositions[number+1]) moveUp(number+1)
+            if (goingDown(number)) moveDown(number+1)
+            else if (goingUp(number)) moveUp(number+1)
         }
     }
 }
